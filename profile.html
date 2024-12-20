@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="./userController.js"></script>
+</head>
+<body onload="checkSession()">
+    <div class="container mt-4">
+        <div class="pfBox">
+            <h2>Profile</h2>
+            <form>
+                <div class="row mt-4">
+                    <div class="col">UserName</div>
+                    <div class="col"><input type="text" id="userName" name="userName" class="form-control" disabled/></div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col">Name</div>
+                    <div class="col"><input type="text" id="accName" name="accName" class="form-control"/></div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col">Email</div>
+                    <div class="col"><input type="email" id="email" name="email" class="form-control"/></div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col">Mobile</div>
+                    <div class="col"><input type="number" id="mob" name="mob" class="form-control"/></div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col">Address</div>
+                    <div class="col">
+                        <textarea id="address" name="address" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col"></div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" onclick="updateProfile()" >Update</button>
+                        <button type="reset" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col"></div>
+                    <div class="col"><a href="./deactivateAcc.html"> Click here to Deactivate Account</a></div>
+                </div>
+                
+            </form>
+            
+        </div>
+    </div>
+
+    <style>
+        .pfBox{
+            width: 600px;
+            height: 500px;
+            border : solid 2px black;
+            border-radius : 20px;
+            padding: 50px 100px;
+            margin-top: 120px;
+            margin-left: 250px;
+        }
+    </style>
+
+    <script>
+        var shoppyUserApi = "https://retoolapi.dev/oS3XyU/shoppyUser";
+        function getUserProfile(){
+
+            let userId = sessionStorage.getItem('userId') || '';           
+
+            fetch(shoppyUserApi+"/"+userId)
+            .then(response => response.json())
+            .then(responseData => {
+                document.getElementById('userName').value = responseData.userName || '';
+                document.getElementById('accName').value = responseData.accName || '';
+                document.getElementById('email').value = responseData.email || '';
+                document.getElementById('mob').value = responseData.mobile || '';
+                document.getElementById('address').value = responseData.address || '';
+             })
+
+        }
+        getUserProfile();
+
+        function updateProfile(){
+            let userName = document.getElementById('userName').value;            
+            let accName = document.getElementById('accName').value;            
+            let email = document.getElementById('email').value;            
+            let mob = document.getElementById('mob').value;            
+            let address = document.getElementById('address').value;
+            let userId = sessionStorage.getItem('userId') || '';
+            
+
+            let requestBody = {
+                userName : userName,
+                accName : accName,
+                email : email,
+                mobile : mob,
+                address : address
+            }
+
+            let request = {
+                method : 'PATCH',
+                headers : { 'Content-Type' : 'application/json'},
+                body : JSON.stringify(requestBody)
+            }
+
+            fetch(shoppyUserApi+"/"+userId, request)
+            .then(response => {
+                if(response.ok){
+                    alert('Profile updated Successfully...');
+                }else{
+                    alert('Error Occurred .. Please try again later...');
+                }
+            })
+        }
+    </script>
+    
+</body>
+</html>
