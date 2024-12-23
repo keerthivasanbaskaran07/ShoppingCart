@@ -9,8 +9,9 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h2 id="productName"> Lipstick</h2>
-        <div class="row">
+        <div id="productRow"></div>
+        <!-- <div class="row">
+            <h2 id="productName"> Lipstick</h2>
             <div class="col">
                 <img src="./assets/images/products/LIPSTICK1005.png" width="400px" height="300px"/>
             </div>
@@ -22,7 +23,7 @@
                     <li>Lip type: Consider your lip shape and size. Matte lipsticks can make lips appear smaller, while glossy ones add volume.</li>
                 </ul>
             </div>
-        </div>
+        </div> -->
         <div class="row mt-4">
             <div class="col">
                 <div class="card" style="width: 18rem;">
@@ -49,5 +50,37 @@
             height: 200px;
         }
     </style>
+    <script>
+        var productApi = "https://retoolapi.dev/ezwyLo/shoppyProducts";
+        var productDetailApi = "https://retoolapi.dev/K0uzwV/shoppyProductDetail";
+
+        function getProduct(){
+
+            let pId = sessionStorage.getItem('productId') || '';
+            fetch(productApi+'/'+pId)
+            .then(response => response.json())
+            .then(responseData => {
+                let product = responseData;
+                generateProductRow(product);
+            })
+        }
+        getProduct();
+
+        function generateProductRow(product){
+
+            let result = "";
+            
+            result += '<div class="row">'+
+                            '<h2 id="productName">'+ product.pName+'</h2>'+
+                            '<div class="col">'+
+                                '<img src="./assets/images/products/'+ product.pImg+'.png" width="400px" height="300px"/>'+
+                            '</div>'+
+                            '<div class="col">'+
+                                product.pdesc
+                            '</div>'+
+                        '</div>';
+            document.getElementById('productRow').innerHTML = result;
+        }
+    </script>
 </body>
 </html>
