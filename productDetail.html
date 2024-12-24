@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="row mt-4">
-            <button type="button" class="btn btn-warning">Add to Cart</button>
+            <button type="button" class="btn btn-warning" onclick="addToCart()">Add to Cart</button>
         </div>
     </div>
     <style>
@@ -53,6 +53,8 @@
     <script>
         var productApi = "https://retoolapi.dev/ezwyLo/shoppyProducts";
         var productDetailApi = "https://retoolapi.dev/K0uzwV/shoppyProductDetail";
+        var cartApi = "https://retoolapi.dev/20HxBu/shoppyCart";
+        var product = {};
 
         function getProduct(){
 
@@ -60,7 +62,7 @@
             fetch(productApi+'/'+pId)
             .then(response => response.json())
             .then(responseData => {
-                let product = responseData;
+                product = responseData;
                 generateProductRow(product);
             })
         }
@@ -80,6 +82,43 @@
                             '</div>'+
                         '</div>';
             document.getElementById('productRow').innerHTML = result;
+        }
+
+        function checkSession(){
+            let userId = sessionStorage.getItem('userId') || '';
+            if(userId == '')
+            {
+                alert('Please do login before adding to Cart...');
+                window.location.href = "./login.html";
+            }
+        }
+
+        function addToCart(){
+            checkSession();
+            let userId = sessionStorage.getItem('userId') || '';
+            let requestBody = {
+                pId: product.pId,
+                pName: product.pName,
+                pPrice: product.pPrice,
+                pCount : 1,
+                user : userId,
+                pImg : product.pImg
+            }
+
+            let request = {
+                method : "POST",
+                headers : { 'Content-Type':'application/json'},
+                body : JSON.stringify(requestBody)
+            }
+
+            fetch(cartApi, request)
+            .then(response => {
+                if(response.ok){
+                    alert("Product Addess into Cart successfully...");
+                }else{
+                    alert('Encountered an issue , please try again later..');
+                }
+            })
         }
     </script>
 </body>
